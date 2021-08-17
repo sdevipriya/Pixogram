@@ -31,7 +31,7 @@ import com.ibm.media.model.NewsFeed;
 import com.ibm.media.service.MediaService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/media")
 public class MediaController {
 	
