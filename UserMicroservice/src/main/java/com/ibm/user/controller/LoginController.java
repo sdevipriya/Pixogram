@@ -2,6 +2,8 @@ package com.ibm.user.controller;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.user.dao.UserDao;
+import com.ibm.user.feign.client.JwtFeignClient;
+import com.ibm.user.model.JwtRequest;
 import com.ibm.user.model.Users;
 
 @RestController
@@ -20,6 +24,11 @@ public class LoginController {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private JwtFeignClient jwtFeignClient;
+	
+	
 	@GetMapping("/msg")
 	public String getMessage() {
 		return "Hello";
@@ -62,19 +71,31 @@ public class LoginController {
 	
 	@PostMapping("/login")
 //	public Boolean loginUser(@RequestParam String userName, @RequestParam String password) {
-	public Boolean loginUser(@RequestBody Users user) {
-	Users usr = userDao.findByuserName(user.getUserName());
+	public Users loginUser(@RequestBody Users user) {
+	Users usr = userDao.findByuserNameAndPassword(user.getUserName(), user.getPassword());
 		System.out.println("uname : "+user.getUserName());
 		System.out.println("pwd : "+user.getPassword());
 		System.out.println("usr.getPassword(): "+usr.getPassword());
-		if(usr!=null && usr.getPassword().equals(user.getPassword()))
-		{System.out.println("logged in");
-		return true;
-		}else { 
-			System.out.println("unable to login");
-			return false;
-			
-	}
+//		if(usr!=null && usr.getPassword().equals(user.getPassword()))
+//		{System.out.println("logged in"+usr);
+//		
+//		return usr;
+//		}else { 
+//			System.out.println("unable to login"+usr);
+//			return usr;
+//			
+//	}
+	//	System.out.println("")
+		
+		JwtRequest jwtRequest = new JwtRequest();
+		jwtRequest.setUserName(user.getUserName());
+		String token = jwtFeignClient.authenticate(jwtRequest);
+		System.out.println("token:"+token);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("auth", token);
+		usr.setToken(token);
+		userDao.save(usr);
+		return usr;
 	}
 	
 

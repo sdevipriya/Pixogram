@@ -34,21 +34,32 @@ public class Users {
 	@Column
 	@CreationTimestamp
 	private Date createdDateTime;
+	@Column
+	private String token;
 	
 	
 	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public Users() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Users(String userId, String userName, String password, String confirm, String profilePictureUrl) {
+	public Users(String userId, String userName, String password, String confirm, String profilePictureUrl, String token) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.password = password;
 		this.confirm = confirm;
 		this.profilePictureUrl = profilePictureUrl;
+		this.token=token;
 	}
 
 	public Integer getId() {
