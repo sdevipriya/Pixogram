@@ -19,5 +19,5 @@ zuul:#  ignored-services: '*'
       path: /misc/**
       service-id: miscellaneous-service
 
-#logging:#  level:#   org:
-#    springframework: debug                                           
+logging:  level:   org:
+    springframework: debug                                           
